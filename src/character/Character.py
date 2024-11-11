@@ -3,7 +3,9 @@ import random
 #Declare constants for game tuning
 ATTACK_DICE = 6
 DEFEND_DICE = 2
-
+DEFENSE_MULTIPLIER = 2
+AVERSION_MULTIPLIER=2
+AFFINITY_REDUCTION=2
 def roll_die(sides):
     return random.randint(1,sides)
 
@@ -126,7 +128,7 @@ class Character:
         defense=self.__battle_stats.strength * roll_die(DEFEND_DICE)
         #Shield doubles defense:
         if self.__condition.shield_up:
-            defense*=2
+            defense*=DEFENSE_MULTIPLIER
         #Total damage is reduced by defense:
         final_dmg = max(final_dmg-defense,0)
 
@@ -137,7 +139,7 @@ class Character:
             #Update message
             self.deliver_message(self.__messenger,f"{self.__name} is resistant to {attack.name} attack.")
             #Affinities only deliver half damage
-            final_dmg=int(final_dmg/2)
+            final_dmg=int(final_dmg/AFFINITY_REDUCTION)
 
         # Check for aversions:
         if (self.__condition.aversions.get(attack.s_type) is not None and
@@ -145,7 +147,7 @@ class Character:
             # Update message
             self.deliver_message(self.__messenger, f"{attack.name} is very effective!")
             # Aversions do double damage:
-            final_dmg = int(final_dmg *2)
+            final_dmg = int(final_dmg *AVERSION_MULTIPLIER)
 
         #Check for healing:
         if (self.__condition.heal_affinity.get(attack.s_type) is not None and
