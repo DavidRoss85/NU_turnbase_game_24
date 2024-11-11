@@ -1,5 +1,5 @@
 
-from src.character.Character import Character
+from src.characters.Character import Character
 
 me=Character("David",1,1000,100,6,2)
 cpu=Character("CPU",1,1000,100,6,1)

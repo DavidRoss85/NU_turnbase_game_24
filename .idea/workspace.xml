@@ -31,6 +31,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.Character.executor": "Run",
+    "Python.demo_Characters.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "davidbranch1",
     "ignore.virus.scanning.warn.message": "true"
