@@ -1,5 +1,8 @@
 import random
 
+#Declare constants for game tuning
+ATTACK_DICE = 6
+DEFEND_DICE = 2
 
 def roll_die(sides):
     return random.randint(1,sides)
@@ -13,10 +16,11 @@ class Character:
         self.__battle_stats=self._Stats(hp,mp,strength,intel)
         self.__condition=self._Condition()
         self.__target=self
-        self.__attack_move=self._Skill("Attack","physical",self.__curr_str,0,"none")
+        self.__messenger=self
+        self.__attack_move=self._Skill("Punch","physical",self.__base_stats.strength,0,"none")
         self.__move_list={
             "Attack":self.attack,
-            "Defend":self.stub_command,
+            "Defend":self.defend,
         }
 
 
@@ -69,7 +73,14 @@ class Character:
     def set_max_hp(self,hp):
         self.__base_stats.hp=hp
     def set_curr_hp(self,hp):
+        #Set HP:
         self.__battle_stats.hp=hp
+        #Health shouldn't dip below 0:
+        if self.__battle_stats.hp<0:
+            self.__battle_stats.hp=0
+        #Ensure health doesn't go above max
+        if self.__battle_stats.hp>self.__base_stats.hp:
+            self.__battle_stats.hp=self.__base_stats.hp
 
     def set_max_mp(self,mp):
         self.__base_stats.mp=mp
@@ -99,19 +110,62 @@ class Character:
     #     return self.__move_list
 
     def attack(self):
-        self.__attack_move.dmg= self.__battle_stats.strength * roll_die(6)
+        self.__attack_move.dmg= self.__battle_stats.strength * roll_die(ATTACK_DICE)
+        self.deliver_message(self.__messenger,f"{self.__name} attacks with {self.__attack_move.name} for {self.__attack_move.dmg}!")
         self.__target.receive_attack(self.__attack_move)
 
     def defend(self):
+        self.deliver_message(self.__messenger,f"{self.__name} guards themself.")
         self.__condition.shield_up=True
 
     def receive_attack(self,attack):
-        final_dmg=attack.dmg
-        final_dmg-= self.__battle_stats.strength * roll_die(2)
+        is_heal=False   #Check if "Attack heals"
+        final_dmg=attack.dmg    #Final damage starts at attack damage
+
+        #Roll dice to determine defense against attack:
+        defense=self.__battle_stats.strength * roll_die(DEFEND_DICE)
+        #Shield doubles defense:
+        if self.__condition.shield_up:
+            defense*=2
+        #Total damage is reduced by defense:
+        final_dmg = max(final_dmg-defense,0)
+
+        #Check for affinities:
         if (self.__condition.affinities.get(attack.s_type) is not None and
             self.__condition.affinities.get(attack.s_type) is True):
+
+            #Update message
+            self.deliver_message(self.__messenger,f"{self.__name} is resistant to {attack.name} attack.")
+            #Affinities only deliver half damage
             final_dmg=int(final_dmg/2)
-        self.__battle_stats.hp-=final_dmg
+
+        # Check for aversions:
+        if (self.__condition.aversions.get(attack.s_type) is not None and
+                self.__condition.affinities.get(attack.s_type) is True):
+            # Update message
+            self.deliver_message(self.__messenger, f"{attack.name} is very effective!")
+            # Aversions do double damage:
+            final_dmg = int(final_dmg *2)
+
+        #Check for healing:
+        if (self.__condition.heal_affinity.get(attack.s_type) is not None and
+                self.__condition.affinities.get(attack.s_type) is True):
+            # Update message
+            self.deliver_message(self.__messenger, f"HP UP")
+            # Healers give health:
+            is_heal=True
+
+        if is_heal:
+            # Update message
+            self.deliver_message(self.__messenger, f"{self.__name} is healed for {final_dmg} points of health.")
+            # Add to health:
+            self.set_curr_hp(self.__battle_stats.hp+final_dmg)
+        else:
+            #Update message
+            self.deliver_message(self.__messenger,f"{self.__name} receives {final_dmg} points of damage.")
+            #Subtract final damage from health:
+            self.set_curr_hp(self.__battle_stats.hp-final_dmg)
+
 
     def execute_move(self,command):
         self.__condition.shield_up=False
@@ -119,6 +173,11 @@ class Character:
 
     def stub_command(self):
         pass
+
+    def deliver_message(self, messenger, message):
+        #stub
+        print(message)
+
     #----------------------Skill-------------------------------
     class _Skill:
         """
@@ -144,3 +203,6 @@ class Character:
         def __init__(self):
             self.shield_up=False
             self.affinities= {"physical":False}
+            self.aversions={"magic":False}
+            self.heal_affinity={"life":True}
+
