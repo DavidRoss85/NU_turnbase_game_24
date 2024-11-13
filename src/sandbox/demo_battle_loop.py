@@ -1,6 +1,8 @@
 import time     #timing module
 from multiprocessing import Process
 
+#Just playing around with loops
+
 myturn=True
 yourturn=False
 selection=""
@@ -60,7 +62,7 @@ def finishanimation():
         while not loopdone:
             tick+=1
             now=time.time()
-            if now-start>= .02:
+            if now-start>= .3:
                 print("did an animation")
                 print(f"Tick: {tick}")
                 loopdone=True
