@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d351514b-af2c-4b30-8544-18965fca786e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/assets/Grand9K_Pixel.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,10 +40,16 @@
     "Python.demo_battle_loop.executor": "Run",
     "Python.pygame_playground.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "davidbranch1",
-    "ignore.virus.scanning.warn.message": "true"
+    "git-widget-placeholder": "davidbranch02",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/David/Desktop/MySDE/Python/NU_turnbase_game_24/src/assets"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\David\Desktop\MySDE\Python\NU_turnbase_game_24\src\assets" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
